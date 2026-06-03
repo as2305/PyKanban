@@ -1,6 +1,7 @@
 #import json and path libraries
 import json
 from pathlib import Path
+import sys
 
 #define the file path
 file_path = Path("kanban.json")
@@ -20,7 +21,7 @@ kanban = json.loads(file_path.read_text())
 #initiate the main program and take user choice
 print("Wecome to PyKanban!")
 while True:
-  choice = input("\nWhat would you like to do? \n 1) New Task \n 2) View Board \n 3) Move Task \n \n >>> ")
+  choice = input("\nWhat would you like to do? \n 1) New Task \n 2) View Board \n 3) Move Task \n 4) Remove Task \n 5) Exit \n \n >>> ")
   #Takes input and assigns it to kanban
   if choice == "1":
     task_input = input("\nPlease enter the task: ")
@@ -54,9 +55,9 @@ while True:
     update_choice = input("\n Enter task to move: ")
     if update_choice in kanban["To-do"]:
       found.append("To-do")
-    if update_choice in kanban["Doing"]:
+    elif update_choice in kanban["Doing"]:
       found.append("Doing")
-    if update_choice in kanban["Done"]:
+    elif update_choice in kanban["Done"]:
       found.append("Done")
     print(found)
     #if task doesn't exist
@@ -70,4 +71,18 @@ while True:
     choices = {1:"To-do", 2:"Doing", 3:"Done"}
     kanban[choices[int(where_choice)]].append(update_choice)
     file_path.write_text(json.dumps(kanban, indent = 4))
+  elif choice == "4":
+    remove_task = input("Which task would you like to delete?: ")
+    found = []
+    if remove_task in kanban["To-do"]:
+      found.append("To-do")
+    elif remove_task in kanban["Doing"]:
+      found.append("Doing")
+    elif remove_task in kanban["Done"]:
+      found.append("Done")
+    kanban[found[0]].remove(remove_task)
+    file_path.write_text(json.dumps(kanban, indent = 4))
+  elif choice == "5":
+    sys.exit()
     
+

@@ -1,10 +1,12 @@
-#import json and path libraries
+#import libraries
 import json
 from pathlib import Path
 import sys
 
+#colour code for warning
 RED = '\033[31m'
 RESET = '\033[0m'
+
 #define the file path
 file_path = Path("kanban.json")
 

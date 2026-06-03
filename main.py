@@ -18,8 +18,9 @@ if not file_path.is_file():
 
 kanban = json.loads(file_path.read_text())
 #initiate the main program and take user choice
+print("Wecome to PyKanban!")
 while True:
-  choice = input("\nWelcome to PyKanban! What would you like to do? \n 1) New Task \n 2) View Board \n 3) Move Task \n \n >>> ")
+  choice = input("\nWhat would you like to do? \n 1) New Task \n 2) View Board \n 3) Move Task \n \n >>> ")
   #Takes input and assigns it to kanban
   if choice == "1":
     task_input = input("\nPlease enter the task: ")
@@ -62,5 +63,11 @@ while True:
     if len(found) == 0:
       print("Not found!")
       break
-    where_choice = input("Where would you like to move it? \n 1) To-do \n 2) Doing \n 3) Done ")
+    where_choice = input("Where would you like to move it? \n 1) To-do \n 2) Doing \n 3) Done \n >>> ")
+    #Removing the element first
+    kanban[found[0]].remove(update_choice)
+    #reassigning it to target board
+    choices = {1:"To-do", 2:"Doing", 3:"Done"}
+    kanban[choices[int(where_choice)]].append(update_choice)
+    file_path.write_text(json.dumps(kanban, indent = 4))
     

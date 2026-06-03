@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import sys
 
+RED = '\033[31m'
+RESET = '\033[0m'
 #define the file path
 file_path = Path("kanban.json")
 
@@ -20,6 +22,7 @@ if not file_path.is_file():
 kanban = json.loads(file_path.read_text())
 #initiate the main program and take user choice
 print("Wecome to PyKanban!")
+print(f"{RED}NOTE: Do not enter duplicate tasks.{RESET}")
 while True:
   choice = input("\nWhat would you like to do? \n 1) New Task \n 2) View Board \n 3) Move Task \n 4) Remove Task \n 5) Exit \n \n >>> ")
   #Takes input and assigns it to kanban
@@ -29,26 +32,28 @@ while True:
     file_path.write_text(json.dumps(kanban, indent = 4))
   #Displays Kanban Board
   elif choice == "2":
-    counter = 1
+    counter_todo = 1
+    counter_doing = 1
+    counter_done = 1
     print("\n------- KANBAN BOARD -------")
     print("\n--- To-do ---")
     if not kanban["To-do"]:
       print("--Empty--")
     for i in kanban["To-do"]:
-      print(f"{counter} --- {i}")
-      counter += 1
+      print(f"{counter_todo} --- {i}")
+      counter_todo += 1
     print("\n--- Doing ---")
     if not kanban["Doing"]:
       print("--Empty--")
     for i in kanban["Doing"]:
-      print(f"{counter} --- {i}")
-      counter += 1
+      print(f"{counter_doing} --- {i}")
+      counter_doing += 1
     print("\n--- Done ---")
     if not kanban["Done"]:
       print("--Empty--")
     for i in kanban["Done"]:
-      print(f"{counter} --- {i}")
-      counter += 1
+      print(f"{counter_done} --- {i}")
+      counter_done += 1
   elif choice == "3":
     #Find where the task is.
     found = []
@@ -59,19 +64,22 @@ while True:
       found.append("Doing")
     elif update_choice in kanban["Done"]:
       found.append("Done")
-    print(found)
     #if task doesn't exist
     if len(found) == 0:
       print("Not found!")
-      break
+      continue
     where_choice = input("Where would you like to move it? \n 1) To-do \n 2) Doing \n 3) Done \n >>> ")
+    if where_choice not in ["1", "2", "3"]:
+      print("Wrong choice!")
+      continue
     #Removing the element first
     kanban[found[0]].remove(update_choice)
     #reassigning it to target board
-    choices = {1:"To-do", 2:"Doing", 3:"Done"}
-    kanban[choices[int(where_choice)]].append(update_choice)
+    choices = {"1":"To-do", "2":"Doing", "3":"Done"}
+    kanban[choices[where_choice]].append(update_choice)
     file_path.write_text(json.dumps(kanban, indent = 4))
   elif choice == "4":
+    #Delete Task function
     remove_task = input("Which task would you like to delete?: ")
     found = []
     if remove_task in kanban["To-do"]:
@@ -80,6 +88,9 @@ while True:
       found.append("Doing")
     elif remove_task in kanban["Done"]:
       found.append("Done")
+    if len(found) == 0:
+      print("Not found!")
+      continue
     kanban[found[0]].remove(remove_task)
     file_path.write_text(json.dumps(kanban, indent = 4))
   elif choice == "5":
